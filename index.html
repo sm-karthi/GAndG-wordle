@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle</title>
+</head>
+
+<body>
+
+    <script>
+        let heading = document.createElement("h1");
+        heading.innerText = "Wordle game"
+        heading.style.textAlign = "center";
+        document.body.appendChild(heading);
+
+        let container = document.createElement("div");
+        container.style.display = "flex";
+        container.style.flexDirection = "column";
+        container.style.gap = "15px";
+        container.style.justifyContent = "center";
+        container.style.alignItems = "center";
+
+        let rowArray = [];
+        for (let i = 0; i < 6; i++) {
+            let row = document.createElement("div");
+            row.style.display = "flex";
+            row.style.gap = "5px"
+
+            let boxes = [];
+            for (let j = 0; j < 5; j++) {
+                let box = document.createElement("div");
+                box.style.width = "50px";
+                box.style.height = "50px";
+                box.style.border = "1px solid black";
+                box.style.borderRadius = "5px";
+
+                boxes.push(box);
+                row.appendChild(box);
+            }
+
+            rowArray.push(boxes);
+            container.appendChild(row);
+        }
+
+        document.body.appendChild(container);
+
+        let buttonAndInput = document.createElement("div");
+        buttonAndInput.style.display = "flex";
+        buttonAndInput.style.justifyContent = "center";
+        buttonAndInput.style.alignItems = "center";
+        buttonAndInput.style.gap = "40px"
+        buttonAndInput.style.marginTop = "50px"
+
+        let input = document.createElement("input");
+        input.setAttribute("type", "text");
+        input.setAttribute("placeholder", "Enter your word")
+        input.setAttribute("maxlength", "5");
+        input.style.height = "25px";
+        input.style.fontSize = "18px";
+        buttonAndInput.appendChild(input);
+
+        let guessBtn = document.createElement("button");
+        guessBtn.innerText = "Guess";
+        guessBtn.style.padding = "5px";
+        guessBtn.style.borderRadius = "5px";
+        guessBtn.style.backgroundColor = "#2eb338"
+        guessBtn.style.color = "white";
+        guessBtn.style.cursor = "pointer";
+
+        guessBtn.onmouseenter = function () {
+            guessBtn.style.backgroundColor = "#3b8240"
+        };
+
+        guessBtn.onmouseleave = function () {
+            guessBtn.style.backgroundColor = "#2eb338";
+        };
+
+        buttonAndInput.appendChild(guessBtn);
+        document.body.appendChild(buttonAndInput);
+
+        let wordList = [
+            "apple", "grape", "peach", "berry", "melon",
+            "brave", "charm", "crane", "doubt", "eagle",
+            "fancy", "glove", "heart", "ideal", "jelly",
+            "knife", "lucky", "magic", "noble", "ocean",
+            "piano", "queen", "radio", "scale", "tiger",
+            "umbra", "vivid", "whale", "xenon", "young",
+            "zebra", "alert", "brick", "climb", "dream",
+            "event", "flood", "giant", "honey", "index",
+            "jumps", "kneel", "laugh", "motel", "night",
+            "orbit", "plant", "quiet", "rider", "shine"
+        ];
+        ;
+
+        let targetWord = wordList[Math.floor(Math.random() * wordList.length)];
+        console.log(targetWord);
+
+        let currentRow = 0;
+
+        guessBtn.onclick = function () {
+            let guessWord = input.value.toLowerCase();
+
+            if (guessWord.length !== 5) {
+                alert("Please enter 5 letters.");
+                return;
+            }
+
+            for (let i = 0; i < 5; i++) {
+                let box = rowArray[currentRow][i];
+
+                let letter = guessWord[i];
+
+                box.innerText = letter;
+
+                if (letter === targetWord[i]) {
+                    box.style.backgroundColor = "green";
+                    box.style.color = "white";
+                    box.style.fontSize = "30px";
+                    box.style.textAlign = "center";
+                }
+                else if (targetWord.includes(letter)) {
+                    box.style.backgroundColor = "#e0c331";
+                    box.style.color = "black";
+                    box.style.fontSize = "30px";
+                    box.style.textAlign = "center";
+                }
+                else {
+                    box.style.backgroundColor = "gray";
+                    box.style.color = "white";
+                    box.style.fontSize = "30px";
+                    box.style.textAlign = "center";
+                }
+            }
+
+            currentRow++;
+            input.value = "";
+
+            if (guessWord === targetWord) {
+                alert("Congralations! you win!");
+                pageReload();
+            }
+            else if (currentRow === 6) {
+                alert("Game over!");
+                pageReload();
+            }
+        }
+
+
+        input.addEventListener("keydown", function(event){
+            if(event.key === "Enter"){
+                guessBtn.onclick();
+            }
+        })
+
+
+        function pageReload() {
+
+            setTimeout(function () {
+                window.location.reload();
+            }, 2000);
+        }
+
+    </script>
+</body>
+
+</html>
