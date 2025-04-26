@@ -22,8 +22,11 @@
         container.style.justifyContent = "center";
         container.style.alignItems = "center";
 
+        let currentRow = 0;
+        let currentBox = 0;
+
         let rowArray = [];
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 7; i++) {
             let row = document.createElement("div");
             row.style.display = "flex";
             row.style.gap = "5px"
@@ -34,7 +37,13 @@
                 box.style.width = "50px";
                 box.style.height = "50px";
                 box.style.border = "1px solid black";
+                box.style.textAlign = "center";
                 box.style.borderRadius = "5px";
+                box.style.lineHeight = "50px"; 
+                box.style.fontSize = "20px";
+                box.style.fontWeight = "bold";
+
+
 
                 boxes.push(box);
                 row.appendChild(box);
@@ -46,20 +55,107 @@
 
         document.body.appendChild(container);
 
+
+
+
+        let wordList = [
+            "apple", "grape", "peach", "berry", "melon",
+            "brave", "charm", "crane", "doubt", "eagle",
+            "fancy", "glove", "heart", "ideal", "jelly",
+            "knife", "lucky", "magic", "noble", "ocean",
+            "piano", "queen", "radio", "scale", "tiger",
+            "umbra", "vivid", "whale", "xenon", "young",
+            "zebra", "alert", "brick", "climb", "dream",
+            "event", "flood", "giant", "honey", "index",
+            "jumps", "kneel", "laugh", "motel", "night",
+            "orbit", "plant", "quiet", "rider", "shine"
+        ];
+
+
+        let targetWord = wordList[Math.floor(Math.random() * wordList.length)];
+        console.log(targetWord);
+
+
+        function handleGuessWord() {
+
+            let word = "";
+            for (let i = 0; i < 5; i++) {
+                word += rowArray[currentRow][i].innerText;
+
+            }
+            console.log(word);
+
+
+            for (let i = 0; i < 5; i++) {
+                let box = rowArray[currentRow][i];
+
+                let letter = word[i].toLowerCase();
+
+                if (letter === targetWord[i]) {
+                    box.style.backgroundColor = "green";
+                    box.style.color = "white";
+
+                }
+                else if (targetWord.includes(letter)) {
+                    box.style.backgroundColor = "#e0c331";
+                    box.style.color = "black";
+
+                }
+                else {
+                    box.style.backgroundColor = "gray";
+                    box.style.color = "white";
+
+                }
+            }
+
+
+            currentRow++;
+            currentBox = 0;
+
+            if (word.toLowerCase() === targetWord) {
+                alert("Congralations! you win!");
+                pageReload();
+            }
+            else if (currentRow === 7) {
+                alert("Game over!");
+                pageReload();
+            }
+
+
+
+        }
+
+
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key.length === 1 && currentRow < 7 && currentBox < 5) {
+                let box = rowArray[currentRow][currentBox];
+
+                box.innerText = event.key.toUpperCase();
+
+
+                currentBox++;
+            }
+            else if (event.key === "Enter" && currentBox === 5) {
+                handleGuessWord();
+            }
+            else if (event.key === "Backspace" && currentBox > 0) {
+                currentBox--;
+                let box = rowArray[currentRow][currentBox];
+                box.innerText = "";
+            }
+        });
+
+
+
+
+
         let buttonAndInput = document.createElement("div");
         buttonAndInput.style.display = "flex";
         buttonAndInput.style.justifyContent = "center";
         buttonAndInput.style.alignItems = "center";
         buttonAndInput.style.gap = "40px"
         buttonAndInput.style.marginTop = "50px"
-
-        let input = document.createElement("input");
-        input.setAttribute("type", "text");
-        input.setAttribute("placeholder", "Enter your word")
-        input.setAttribute("maxlength", "5");
-        input.style.height = "25px";
-        input.style.fontSize = "18px";
-        buttonAndInput.appendChild(input);
 
         let guessBtn = document.createElement("button");
         guessBtn.innerText = "Guess";
@@ -80,79 +176,9 @@
         buttonAndInput.appendChild(guessBtn);
         document.body.appendChild(buttonAndInput);
 
-        let wordList = [
-            "apple", "grape", "peach", "berry", "melon",
-            "brave", "charm", "crane", "doubt", "eagle",
-            "fancy", "glove", "heart", "ideal", "jelly",
-            "knife", "lucky", "magic", "noble", "ocean",
-            "piano", "queen", "radio", "scale", "tiger",
-            "umbra", "vivid", "whale", "xenon", "young",
-            "zebra", "alert", "brick", "climb", "dream",
-            "event", "flood", "giant", "honey", "index",
-            "jumps", "kneel", "laugh", "motel", "night",
-            "orbit", "plant", "quiet", "rider", "shine"
-        ];
-        ;
-
-        let targetWord = wordList[Math.floor(Math.random() * wordList.length)];
-        console.log(targetWord);
-
-        let currentRow = 0;
-
         guessBtn.onclick = function () {
-            let guessWord = input.value.toLowerCase();
-
-            if (guessWord.length !== 5) {
-                alert("Please enter 5 letters.");
-                return;
-            }
-
-            for (let i = 0; i < 5; i++) {
-                let box = rowArray[currentRow][i];
-
-                let letter = guessWord[i];
-
-                box.innerText = letter;
-
-                if (letter === targetWord[i]) {
-                    box.style.backgroundColor = "green";
-                    box.style.color = "white";
-                    box.style.fontSize = "30px";
-                    box.style.textAlign = "center";
-                }
-                else if (targetWord.includes(letter)) {
-                    box.style.backgroundColor = "#e0c331";
-                    box.style.color = "black";
-                    box.style.fontSize = "30px";
-                    box.style.textAlign = "center";
-                }
-                else {
-                    box.style.backgroundColor = "gray";
-                    box.style.color = "white";
-                    box.style.fontSize = "30px";
-                    box.style.textAlign = "center";
-                }
-            }
-
-            currentRow++;
-            input.value = "";
-
-            if (guessWord === targetWord) {
-                alert("Congralations! you win!");
-                pageReload();
-            }
-            else if (currentRow === 6) {
-                alert("Game over!");
-                pageReload();
-            }
+            handleGuessWord();
         }
-
-
-        input.addEventListener("keydown", function(event){
-            if(event.key === "Enter"){
-                guessBtn.onclick();
-            }
-        })
 
 
         function pageReload() {
@@ -161,6 +187,9 @@
                 window.location.reload();
             }, 2000);
         }
+
+
+
 
     </script>
 </body>
